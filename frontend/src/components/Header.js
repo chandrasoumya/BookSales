@@ -4,25 +4,43 @@ import axios from "axios";
 
 const Header = ({ user, setUser }) => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState(""); // State for the search input
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchBy, setSearchBy] = useState("title");
 
   const handleLogout = () => {
-    setUser(null); // Update the user state in the parent component
-    navigate("/login"); // Redirect to login page after logout
+    setUser(null);
+    navigate("/login");
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    if (!searchQuery) {
+      alert("Please enter a value to search.");
+      return;
+    }
     try {
+      // Correctly set the URL based on the selected search criteria
       const response = await axios.get(
-        `http://localhost:5000/title/${encodeURIComponent(searchQuery)}`
+        `http://localhost:5000/${searchBy}/${encodeURIComponent(searchQuery)}`
       );
 
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      // Navigate to the search results page
+      navigate(
+        `/search?query=${encodeURIComponent(searchQuery)}&searchBy=${searchBy}`
+      );
+      setSearchQuery(""); // Clear the search input
     } catch (err) {
       console.error("Error searching for books:", err);
-      alert("Book Not Found");
+      alert("An error occurred while searching. Please try again.");
     }
+  };
+
+  const navigateToRecommended = () => {
+    navigate("/#recommendation");
+  };
+
+  const navigateToBestsellers = () => {
+    navigate("/#bestsellers");
   };
 
   return (
@@ -36,14 +54,20 @@ const Header = ({ user, setUser }) => {
             </Link>
           </li>
           <li>
-            <a href="#bestsellers" className="hover:text-gray-400">
+            <button
+              onClick={navigateToBestsellers}
+              className="hover:text-gray-400"
+            >
               Bestsellers
-            </a>
+            </button>
           </li>
           <li>
-            <a href="#recommandation" className="hover:text-gray-400">
+            <button
+              onClick={navigateToRecommended}
+              className="hover:text-gray-400"
+            >
               Recommended
-            </a>
+            </button>
           </li>
           {user ? (
             <>
@@ -68,11 +92,20 @@ const Header = ({ user, setUser }) => {
         </ul>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearch} className="mt-4">
+        <form onSubmit={handleSearch} className="mt-4 flex items-center">
+          <select
+            className="p-2 text-black rounded mr-2"
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+          >
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="genre">Genre</option>
+          </select>
           <input
             type="text"
             className="p-2 text-black rounded"
-            placeholder="Search by title"
+            placeholder={`Search by ${searchBy}`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

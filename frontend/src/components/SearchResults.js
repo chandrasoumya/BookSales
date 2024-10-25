@@ -1,4 +1,3 @@
-// src/components/SearchResults.js
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,25 +6,43 @@ const SearchResults = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const query = new URLSearchParams(useLocation().search).get("query");
-  const navigate = useNavigate(); // Use the navigate hook
+  const searchBy = new URLSearchParams(useLocation().search).get("searchBy");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/title/${encodeURIComponent(query)}`
-        );
-        setBooks(response.data);
+        let endpoint = "";
+        if (searchBy === "title") {
+          endpoint = `http://localhost:5000/title/${encodeURIComponent(query)}`;
+        } else if (searchBy === "author") {
+          endpoint = `http://localhost:5000/author/${encodeURIComponent(
+            query
+          )}`;
+        } else if (searchBy === "genre") {
+          endpoint = `http://localhost:5000/genre/${encodeURIComponent(query)}`;
+        }
+
+        const response = await axios.get(endpoint);
+
+        if (response.data.length === 0) {
+          // No books found
+          setError("No books found.");
+        } else {
+          setBooks(response.data);
+          setError(null); // Clear any previous error messages
+        }
         setLoading(false);
       } catch (err) {
-        setError("Error fetching books.");
+        setError("An error occurred while searching. Please try again.");
         setLoading(false);
       }
     };
 
     fetchBooks();
-  }, [query]);
+  }, [query, searchBy]);
 
   const handleBookClick = (id) => {
     navigate(`/book/${id}`);

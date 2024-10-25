@@ -31,7 +31,7 @@ function App() {
               </>
             }
           />
-          <Route path="/book/:id" element={<BookDetails />} />
+          <Route path="/book/:id" element={<BookDetails user={user} />} />
           <Route path="/search" element={<SearchResults />} />{" "}
           {/* Add this route */}
           <Route path="/register" element={<Register />} />

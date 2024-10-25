@@ -51,4 +51,36 @@ router.get("/title/:title", async (req, res) => {
   }
 });
 
+// GET books by Author
+router.get("/author/:author", async (req, res) => {
+  try {
+    const author = req.params.author.replace(/_/g, " ");
+    const books = await Book.find({ author: new RegExp(author, "i") });
+    if (books.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No books found with the given author" });
+    }
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET books by Genre (Category)
+router.get("/genre/:genre", async (req, res) => {
+  try {
+    const genre = req.params.genre.replace(/_/g, " ");
+    const books = await Book.find({ category: new RegExp(genre, "i") }); // Use category for genre search
+    if (books.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No books found in the given genre" });
+    }
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
