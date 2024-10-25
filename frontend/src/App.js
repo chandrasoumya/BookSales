@@ -8,8 +8,9 @@ import Footer from "./components/Footer";
 import BookDetails from "./components/BookDetails";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import SearchResults from "./components/SearchResults"; // Import the SearchResults component
+import SearchResults from "./components/SearchResults";
 import Profile from "./components/Profile";
+import Cart from "./components/Cart"; // Import Cart component
 
 function App() {
   const [user, setUser] = useState(null);
@@ -32,14 +33,15 @@ function App() {
             }
           />
           <Route path="/book/:id" element={<BookDetails user={user} />} />
-          <Route path="/search" element={<SearchResults />} />{" "}
-          {/* Add this route */}
+          <Route path="/search" element={<SearchResults />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/login"
             element={<Login setUser={setUser} setToken={setToken} />}
           />
           <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/cart" element={<Cart user={user} />} />{" "}
+          {/* Cart route */}
         </Routes>
 
         <Footer />

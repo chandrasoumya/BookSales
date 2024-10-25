@@ -123,7 +123,7 @@ Router.put("/users/:email", authenticateToken, async (req, res) => {
 });
 
 // Add a book to the cart
-Router.post("/users/:email/cart", authenticateToken, async (req, res) => {
+Router.post("/users/:email/cart", async (req, res) => {
   const { bookId, quantity } = req.body;
 
   try {
@@ -142,12 +142,13 @@ Router.post("/users/:email/cart", authenticateToken, async (req, res) => {
     await user.save();
     res.status(200).send(user.Cart);
   } catch (err) {
+    console.log(err);
     res.status(400).send("Error adding to cart: " + err);
   }
 });
 
 // Update cart quantity
-Router.put("/users/:email/cart", authenticateToken, async (req, res) => {
+Router.put("/users/:email/cart", async (req, res) => {
   const { bookId, quantity } = req.body;
 
   try {
@@ -173,50 +174,39 @@ Router.put("/users/:email/cart", authenticateToken, async (req, res) => {
 });
 
 // Remove a book from the cart
-Router.delete(
-  "/users/:email/cart/:bookId",
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const user = await User.findOne({ Email: req.params.email });
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-
-      user.Cart = user.Cart.filter((item) => item.bookId !== req.params.bookId);
-      await user.save();
-      res.status(200).send("Item removed from cart");
-    } catch (err) {
-      res.status(400).send("Error removing from cart: " + err);
-    }
-  }
-);
-
-// Fetch the user's cart with book details
-Router.get("/users/:email/cart", authenticateToken, async (req, res) => {
+Router.delete("/users/:email/cart/:bookId", async (req, res) => {
   try {
-    const user = await User.findOne({ Email: req.params.email }).populate(
-      "Cart.bookId"
-    );
+    const user = await User.findOne({ Email: req.params.email });
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-    const populatedCart = await Promise.all(
-      user.Cart.map(async (item) => {
-        const book = await Book.findById(item.bookId);
-        return {
-          ...item._doc,
-          title: book.title,
-          price: book.price,
-          img: book.img,
-        };
-      })
-    );
-
-    res.status(200).send({ cart: populatedCart });
+    user.Cart = user.Cart.filter((item) => item.bookId !== req.params.bookId);
+    await user.save();
+    res.status(200).send("Item removed from cart");
   } catch (err) {
-    res.status(400).send("Error fetching cart: " + err);
+    res.status(400).send("Error removing from cart: " + err);
+  }
+});
+
+// Fetch the user's cart with book details
+Router.get("/users/:email/cart", async (req, res) => {
+  try {
+    const user = await User.findOne({ Email: req.params.email }).populate({
+      path: "Cart.bookId",
+      model: "books",
+      select: "title price img", // Ensure these fields exist in your book schema
+    });
+
+    if (!user) {
+      console.error("User not found:", req.params.email);
+      return res.status(404).send("User not found");
+    }
+
+    res.status(200).send({ cart: user.Cart });
+  } catch (err) {
+    console.error("Error fetching cart details:", err.message || err);
+    res.status(500).send("Error fetching cart: " + err.message);
   }
 });
 

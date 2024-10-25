@@ -7,6 +7,7 @@ const BookDetails = ({ user }) => {
   const [book, setBook] = useState(null); // State to hold book details
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState(null); // State to track any errors
+  const [itemInCart, setItemInCart] = useState(false); // fecth if item in cart
 
   // Function to handle adding the book to the cart
   const handleAddToCart = async () => {
@@ -16,14 +17,15 @@ const BookDetails = ({ user }) => {
     }
 
     try {
+      console.log(user.Email, book.bookId);
       // Make a POST request to add the book to the cart
-      await axios.post(`/users/${user.Email}/cart`, {
-        bookId: book._id, // Use the book's ID
+      await axios.post(`http://localhost:5000/users/${user.Email}/cart`, {
+        bookId: book.bookId, // Use the book's ID
         quantity: 1, // Default quantity of 1
       });
       alert("Book added to cart");
     } catch (err) {
-      console.error("Error adding book to cart:", err);
+      // console.error("Error adding book to cart:", err);
       alert("Error adding book to cart");
     }
   };
@@ -84,6 +86,12 @@ const BookDetails = ({ user }) => {
             </button>
             <br />
             <br />
+            {/* {itemInCart && (
+              <div className=" flex items-center align-middle justify-center w-[150px] bg-yellow-400 rounded-md p-2">
+                {} items in cart
+              </div>
+            )} */}
+            {/* <br /> */}
             <button
               onClick={handleAddToCart}
               className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-950"

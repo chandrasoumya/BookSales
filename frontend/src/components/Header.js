@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaShoppingCart } from "react-icons/fa"; // Import cart icon
 
 const Header = ({ user, setUser }) => {
   const navigate = useNavigate();
@@ -19,35 +20,25 @@ const Header = ({ user, setUser }) => {
       return;
     }
     try {
-      // Correctly set the URL based on the selected search criteria
       const response = await axios.get(
         `http://localhost:5000/${searchBy}/${encodeURIComponent(searchQuery)}`
       );
 
-      // Navigate to the search results page
       navigate(
         `/search?query=${encodeURIComponent(searchQuery)}&searchBy=${searchBy}`
       );
-      setSearchQuery(""); // Clear the search input
+      setSearchQuery("");
     } catch (err) {
       console.error("Error searching for books:", err);
       alert("An error occurred while searching. Please try again.");
     }
   };
 
-  const navigateToRecommended = () => {
-    navigate("/#recommendation");
-  };
-
-  const navigateToBestsellers = () => {
-    navigate("/#bestsellers");
-  };
-
   return (
     <header className="bg-blue-900 text-white p-4 text-xl">
-      <nav>
+      <nav className="flex justify-between items-center">
+        <div className="text-2xl font-bold mr-8">THE LIBRARIANS</div>
         <ul className="flex space-x-4">
-          <div className="text-2xl font-bold mr-8">THE LIBRARIANS</div>
           <li>
             <Link to="/" className="hover:text-gray-400">
               Home
@@ -55,7 +46,7 @@ const Header = ({ user, setUser }) => {
           </li>
           <li>
             <button
-              onClick={navigateToBestsellers}
+              onClick={() => navigate("/#bestsellers")}
               className="hover:text-gray-400"
             >
               Bestsellers
@@ -63,7 +54,7 @@ const Header = ({ user, setUser }) => {
           </li>
           <li>
             <button
-              onClick={navigateToRecommended}
+              onClick={() => navigate("/#recommendation")}
               className="hover:text-gray-400"
             >
               Recommended
@@ -90,6 +81,11 @@ const Header = ({ user, setUser }) => {
             </li>
           )}
         </ul>
+
+        {/* Cart Icon */}
+        <Link to="/cart" className="hover:text-gray-400 ml-4">
+          <FaShoppingCart size={24} />
+        </Link>
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="mt-4 flex items-center">

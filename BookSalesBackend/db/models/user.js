@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
     {
       bookId: {
         type: String,
+        ref: "book",
         required: true,
       },
       quantity: {
