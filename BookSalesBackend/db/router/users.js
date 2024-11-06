@@ -193,9 +193,9 @@ Router.delete("/users/:email/cart/:bookId", async (req, res) => {
 Router.get("/users/:email/cart", async (req, res) => {
   try {
     const user = await User.findOne({ Email: req.params.email }).populate({
-      path: "Cart.bookId",
+      path: "Cart",
       model: "books",
-      select: "title price img", // Ensure these fields exist in your book schema
+      select: "title price img",
     });
 
     if (!user) {

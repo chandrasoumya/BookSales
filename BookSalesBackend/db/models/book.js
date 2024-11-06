@@ -5,6 +5,7 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    id: true,
   },
   title: {
     type: String,
@@ -50,6 +51,7 @@ const bookSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  _id: false,
 });
 
 const Book = mongoose.model("books", bookSchema);

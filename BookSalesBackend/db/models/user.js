@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema({
   Cart: [
     {
       bookId: {
-        type: String,
-        ref: "book",
+        type: mongoose.Schema.Types.String,
+        ref: "books",
         required: true,
       },
       quantity: {

@@ -4,6 +4,8 @@ import axios from "axios";
 
 const Cart = ({ user }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [bookDetails, setBookDetails] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -18,9 +20,34 @@ const Cart = ({ user }) => {
       );
       console.log(response.data.cart);
       setCartItems(response.data.cart);
+      fetchBookDetails(response.data.cart);
     } catch (err) {
       console.error("Error fetching cart:", err);
     }
+  };
+
+  const fetchBookDetails = async (cartItems) => {
+    setIsLoading(true);
+    const bookIds = cartItems.map((item) => item.bookId);
+    const promises = bookIds.map((bookId) =>
+      axios.get(`http://localhost:5000/${bookId}`).catch((error) => {
+        if (error.response.status === 404) {
+          console.log(`Book not found: ${bookId}`);
+          return null;
+        } else {
+          throw error;
+        }
+      })
+    );
+    const responses = await Promise.all(promises);
+    const details = responses.reduce((acc, response) => {
+      if (response && response.data) {
+        acc[response.data.bookId] = response.data;
+      }
+      return acc;
+    }, {});
+    setBookDetails(details);
+    setIsLoading(false);
   };
 
   const handleQuantityChange = async (bookId, quantity) => {
@@ -48,7 +75,14 @@ const Cart = ({ user }) => {
 
   const calculateTotal = () => {
     return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce(
+        (total, item) =>
+          total +
+          (bookDetails[item.bookId]
+            ? bookDetails[item.bookId].price * item.quantity
+            : 0),
+        0
+      )
       .toFixed(2);
   };
 
@@ -64,19 +98,31 @@ const Cart = ({ user }) => {
               key={item.bookId}
               className="flex justify-between items-center mb-4"
             >
-              <div className="flex items-center">
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className="w-16 h-16 mr-4"
-                />
-                <div>
-                  <h3 className="font-bold">{item.title}</h3>
-                  <p className="text-sm">Quantity: {item.quantity}</p>
+              {bookDetails[item.bookId] ? (
+                <div className="flex items-center">
+                  <img
+                    src={bookDetails[item.bookId].img}
+                    alt={bookDetails[item.bookId].title}
+                    className="w-24 h-28 mr-4"
+                  />
+                  <div>
+                    <h3 className="font-bold">
+                      {bookDetails[item.bookId].title}
+                    </h3>
+                    <p className="text-sm">Quantity: {item.quantity}</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <p>Loading...</p>
+              )}
               <div>
-                <p className="font-bold">${item.price.toFixed(2)}</p>
+                {bookDetails[item.bookId] ? (
+                  <p className="font-bold">
+                    ${bookDetails[item.bookId].price.toFixed(2)}
+                  </p>
+                ) : (
+                  <p>Loading...</p>
+                )}
                 <div className="flex space-x-2">
                   <button
                     onClick={() =>
