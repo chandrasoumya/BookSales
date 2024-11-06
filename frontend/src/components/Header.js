@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaShoppingCart } from "react-icons/fa"; // Import cart icon
+import {
+  FaShoppingCart,
+  FaHome,
+  FaBook,
+  FaStar,
+  FaUser,
+  FaSignInAlt,
+  FaSignOutAlt,
+} from "react-icons/fa"; // Import icons
+import { BiSearchAlt2 } from "react-icons/bi"; // Search icon
 
 const Header = ({ user, setUser }) => {
   const navigate = useNavigate();
@@ -36,61 +45,69 @@ const Header = ({ user, setUser }) => {
 
   return (
     <header className="bg-blue-900 text-white p-4 text-xl">
-      <nav className="flex justify-between items-center">
+      <nav className="flex justify-between items-center flex-wrap">
         <div className="text-2xl font-bold mr-8">THE LIBRARIANS</div>
-        <ul className="flex space-x-4">
+        <ul className="flex space-x-4 ">
           <li>
-            <Link to="/" className="hover:text-gray-400">
-              Home
+            <Link to="/" className="hover:text-gray-400 flex items-center">
+              <FaHome className="mr-1" /> Home
             </Link>
           </li>
           <li>
             <button
               onClick={() => navigate("/#bestsellers")}
-              className="hover:text-gray-400"
+              className="hover:text-gray-400 flex items-center"
             >
-              Bestsellers
+              <FaStar className="mr-1" /> Bestsellers
             </button>
           </li>
           <li>
             <button
               onClick={() => navigate("/#recommendation")}
-              className="hover:text-gray-400"
+              className="hover:text-gray-400 flex items-center"
             >
-              Recommended
+              <FaBook className="mr-1" /> Recommended
             </button>
           </li>
           {user ? (
             <>
               <li>
-                <Link to="/profile" className="hover:text-gray-400">
-                  Profile
+                <Link
+                  to="/profile"
+                  className="hover:text-gray-400 flex items-center"
+                >
+                  <FaUser className="mr-1" /> Profile
                 </Link>
               </li>
               <li>
-                <button onClick={handleLogout} className="hover:text-gray-400">
-                  Logout
+                <button
+                  onClick={handleLogout}
+                  className="hover:text-gray-400 flex items-center"
+                >
+                  <FaSignOutAlt className="mr-1" /> Logout
                 </button>
               </li>
             </>
           ) : (
             <li>
-              <Link to="/login" className="hover:text-gray-400">
-                Login
+              <Link
+                to="/login"
+                className="hover:text-gray-400 flex items-center"
+              >
+                <FaSignInAlt className="mr-1" /> Login
               </Link>
             </li>
           )}
+          {/* Cart Icon */}
+          <Link to="/cart" className="hover:text-gray-400 ml-4 flex gap-1">
+            <FaShoppingCart size={24} /> Cart
+          </Link>
         </ul>
-
-        {/* Cart Icon */}
-        <Link to="/cart" className="hover:text-gray-400 ml-4">
-          <FaShoppingCart size={24} />
-        </Link>
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="mt-4 flex items-center">
           <select
-            className="p-2 text-black rounded mr-2"
+            className="p-2 text-white font-semibold rounded mr-2 bg-blue-600 hover:bg-blue-700 cursor-pointer"
             value={searchBy}
             onChange={(e) => setSearchBy(e.target.value)}
           >
@@ -107,9 +124,9 @@ const Header = ({ user, setUser }) => {
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white p-2 rounded ml-2"
+            className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded ml-2 flex items-center"
           >
-            Search
+            <BiSearchAlt2 className="mr-1" /> Search
           </button>
         </form>
       </nav>

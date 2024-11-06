@@ -10,7 +10,9 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import SearchResults from "./components/SearchResults";
 import Profile from "./components/Profile";
-import Cart from "./components/Cart"; // Import Cart component
+import Cart from "./components/Cart";
+import OrderPage from "./components/OrderPage";
+import ReviewOrderPage from "./components/ReviewOrderPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,8 +42,9 @@ function App() {
             element={<Login setUser={setUser} setToken={setToken} />}
           />
           <Route path="/profile" element={<Profile user={user} />} />
-          <Route path="/cart" element={<Cart user={user} />} />{" "}
-          {/* Cart route */}
+          <Route path="/cart" element={<Cart user={user} />} />
+          <Route path="/order" element={<OrderPage />} />
+          <Route path="/review-order" element={<ReviewOrderPage />} />
         </Routes>
 
         <Footer />

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const BookDetails = ({ user }) => {
   const { id } = useParams(); // Fetch the book's ID from the URL
+  const navigate = useNavigate(); // useNavigate for navigation
   const [book, setBook] = useState(null); // State to hold book details
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState(null); // State to track any errors
@@ -28,6 +29,27 @@ const BookDetails = ({ user }) => {
       // console.error("Error adding book to cart:", err);
       alert("Error adding book to cart");
     }
+  };
+
+  // Function to handle Buy Now button click
+  const handleBuyNow = () => {
+    if (!user) {
+      alert("Please log in to proceed with the purchase.");
+      return;
+    }
+    navigate("/order", {
+      state: {
+        checkoutItems: [
+          {
+            title: book.title,
+            quantity: 1,
+            bookId: book.bookId,
+            price: book.price,
+          },
+        ],
+        total: book.price,
+      },
+    });
   };
 
   // Fetch the book details from the server
@@ -81,7 +103,10 @@ const BookDetails = ({ user }) => {
             <p className="text-2xl font-bold mb-6">{book.price}</p>
 
             {/* Buy Now and Add to Cart buttons */}
-            <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-950">
+            <button
+              onClick={handleBuyNow}
+              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-950"
+            >
               Buy Now
             </button>
             <br />

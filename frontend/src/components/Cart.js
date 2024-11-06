@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Cart = ({ user }) => {
   const [cartItems, setCartItems] = useState([]);
   const [bookDetails, setBookDetails] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -18,7 +19,6 @@ const Cart = ({ user }) => {
       const response = await axios.get(
         `http://localhost:5000/users/${user.Email}/cart`
       );
-      console.log(response.data.cart);
       setCartItems(response.data.cart);
       fetchBookDetails(response.data.cart);
     } catch (err) {
@@ -86,8 +86,19 @@ const Cart = ({ user }) => {
       .toFixed(2);
   };
 
+  const handleCheckout = () => {
+    const checkoutItems = cartItems.map((item) => ({
+      title: bookDetails[item.bookId]?.title,
+      quantity: item.quantity,
+      bookId: item.bookId,
+      price: bookDetails[item.bookId]?.price,
+    }));
+    const total = calculateTotal();
+    navigate("/order", { state: { checkoutItems, total } });
+  };
+
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-screen">
       <h2 className="text-xl font-bold mb-4">Your Cart</h2>
       {cartItems.length === 0 ? (
         <p>Your cart is empty</p>
@@ -96,20 +107,20 @@ const Cart = ({ user }) => {
           {cartItems.map((item) => (
             <div
               key={item.bookId}
-              className="flex justify-between items-center mb-4"
+              className="flex justify-between items-center mb-4 shadow-md shadow-gray-500 border-t-[1px] border-gray-300 p-2 rounded-md"
             >
               {bookDetails[item.bookId] ? (
                 <div className="flex items-center">
                   <img
                     src={bookDetails[item.bookId].img}
                     alt={bookDetails[item.bookId].title}
-                    className="w-24 h-28 mr-4"
+                    className="w-[100px] h-[150px] mr-4"
                   />
                   <div>
-                    <h3 className="font-bold">
+                    <h2 className="font-bold text-xl">
                       {bookDetails[item.bookId].title}
-                    </h3>
-                    <p className="text-sm">Quantity: {item.quantity}</p>
+                    </h2>
+                    <p className="text-md">Quantity: {item.quantity}</p>
                   </div>
                 </div>
               ) : (
@@ -125,6 +136,7 @@ const Cart = ({ user }) => {
                 )}
                 <div className="flex space-x-2">
                   <button
+                    className="bg-red-400 p-2 rounded-md hover:bg-red-500"
                     onClick={() =>
                       handleQuantityChange(item.bookId, item.quantity - 1)
                     }
@@ -132,26 +144,33 @@ const Cart = ({ user }) => {
                     -
                   </button>
                   <button
+                    className="bg-green-400 p-2 rounded-md hover:bg-green-500"
                     onClick={() =>
                       handleQuantityChange(item.bookId, item.quantity + 1)
                     }
                   >
                     +
                   </button>
-                  <button onClick={() => handleRemoveItem(item.bookId)}>
+                  <button
+                    className="bg-yellow-400 p-2 rounded-md hover:bg-yellow-500"
+                    onClick={() => handleRemoveItem(item.bookId)}
+                  >
                     Remove
                   </button>
                 </div>
               </div>
             </div>
           ))}
+          <br></br>
           <div className="mt-4">
             <p className="font-bold">Total: ${calculateTotal()}</p>
-            <Link to="/checkout">
-              <button className="bg-blue-500 text-white p-2 rounded">
-                Checkout
-              </button>
-            </Link>
+            <br></br>
+            <button
+              onClick={handleCheckout}
+              className="bg-blue-500 text-white font-semibold p-2 rounded hover:bg-blue-700"
+            >
+              Checkout
+            </button>
           </div>
         </div>
       )}
