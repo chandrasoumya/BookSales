@@ -52,6 +52,29 @@ const BookDetails = ({ user }) => {
     });
   };
 
+  // Function to handle adding the book to the wishlist
+  const handleAddToWishlist = async () => {
+    if (!user) {
+      alert("Please log in to add items to your wishlist.");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5000/wishlist/", {
+        email: user.Email, // Include the user's email
+        mobile: user.Mobile, // Include the user's mobile number
+        bookId: book.bookId, // Use the book's ID
+        title: book.title, // Include the book title
+      });
+      alert("Book added to wishlist");
+    } catch (err) {
+      alert(
+        "Error adding book to wishlist: " +
+          (err.response?.data?.message || err.message)
+      );
+    }
+  };
+
   // Fetch the book details from the server
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -102,27 +125,32 @@ const BookDetails = ({ user }) => {
             </p>
             <p className="text-2xl font-bold mb-6">{book.price}</p>
 
-            {/* Buy Now and Add to Cart buttons */}
-            <button
-              onClick={handleBuyNow}
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-950"
-            >
-              Buy Now
-            </button>
-            <br />
-            <br />
-            {/* {itemInCart && (
-              <div className=" flex items-center align-middle justify-center w-[150px] bg-yellow-400 rounded-md p-2">
-                {} items in cart
-              </div>
-            )} */}
-            {/* <br /> */}
-            <button
-              onClick={handleAddToCart}
-              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-950"
-            >
-              Add to Cart
-            </button>
+            {/* Conditional rendering based on stock */}
+            {book.stock > 0 ? (
+              <>
+                <button
+                  onClick={handleBuyNow}
+                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-950"
+                >
+                  Buy Now
+                </button>
+                <br />
+                <br />
+                <button
+                  onClick={handleAddToCart}
+                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-950"
+                >
+                  Add to Cart
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleAddToWishlist}
+                className="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-800"
+              >
+                Add to Wishlist
+              </button>
+            )}
           </div>
         </div>
       ) : (

@@ -4,6 +4,7 @@ const cors = require("cors");
 const UserRouter = require("./db/router/users");
 const BookRouter = require("./db/router/books");
 const OrderRouter = require("./db/router/orders");
+const WishlistRouter = require("./db/router/wishlists");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -19,6 +20,7 @@ require("./db/conn");
 app.use(UserRouter);
 app.use(BookRouter);
 app.use(OrderRouter);
+app.use(WishlistRouter);
 
 app.listen(port, () => {
   console.log("server is live on " + port);
