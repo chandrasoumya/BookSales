@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ReviewOrderPage = () => {
   const { state } = useLocation();
@@ -7,9 +8,45 @@ const ReviewOrderPage = () => {
 
   const navigate = useNavigate();
 
-  const handleConfirmOrder = () => {
-    alert("Order confirmed!"); // Replace with actual order confirmation logic
-    navigate("/order-success");
+  const handleConfirmOrder = async () => {
+    try {
+      // Prepare order data
+      const orderData = {
+        shippingDetails: {
+          name: shippingDetails.name,
+          address: shippingDetails.address,
+          city: shippingDetails.city,
+          postalCode: shippingDetails.postalCode,
+          phoneNumber: shippingDetails.phoneNumber,
+        },
+        checkoutItems: checkoutItems.map((item) => ({
+          title: item.title,
+          quantity: item.quantity,
+          bookId: item.bookId,
+          price: item.price,
+        })),
+        totalAmount: total,
+      };
+
+      console.log(orderData); // Debugging to ensure the structure is correct
+
+      // Send order data to the backend
+      const response = await axios.post(
+        "http://localhost:5000/orders/", // Make sure this URL is correct
+        orderData
+      );
+
+      // If the order was placed successfully, navigate to the order success page
+      if (response.status === 201) {
+        alert("Order confirmed!");
+        // navigate("/order-success");
+      } else {
+        alert("Error placing the order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error confirming order:", error);
+      alert("There was an issue confirming your order. Please try again.");
+    }
   };
 
   return (

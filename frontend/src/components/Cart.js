@@ -167,7 +167,7 @@ const Cart = ({ user }) => {
             <br></br>
             <button
               onClick={handleCheckout}
-              className="bg-blue-500 text-white font-semibold p-2 rounded hover:bg-blue-700"
+              className="bg-blue-500 text-white font-semibold p-2 rounded hover:bg-blue-700 w-full"
             >
               Checkout
             </button>
