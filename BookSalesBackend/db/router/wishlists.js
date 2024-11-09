@@ -6,7 +6,7 @@ const Wishlist = require("../models/wishlist"); // Adjust path as needed
 router.get("/wishlist/:email", async (req, res) => {
   try {
     const email = req.params.email;
-    const wishlist = await Wishlist.findOne({ email }).populate("items.bookId");
+    const wishlist = await Wishlist.findOne({ email }).populate("items");
     if (!wishlist) {
       return res
         .status(404)
@@ -35,7 +35,16 @@ router.post("/wishlist", async (req, res) => {
         items: [{ bookId, title }],
       });
     } else {
-      // Add the new item to the existing wishlist
+      // Check if the item already exists in the wishlist
+      const itemExists = wishlist.items.some(
+        (item) => item.bookId.toString() === bookId
+      );
+
+      if (itemExists) {
+        return res.status(400).json({ message: "Item already in wishlist" });
+      }
+
+      // Add the new item to the wishlist
       wishlist.items.push({ bookId, title });
     }
 

@@ -25,18 +25,18 @@ router.get("/orders/:id", async (req, res) => {
   }
 });
 
-// GET orders by customer name
-router.get("/customer/:name", async (req, res) => {
+// GET orders by customer email
+router.get("/orders/:email", async (req, res) => {
   try {
-    const name = req.params.name.replace(/_/g, " ");
+    const email = req.params.email;
     const orders = await Order.find({
-      customerName: new RegExp(name, "i"),
-    }).populate("items.bookId");
+      email: new RegExp(email, "i"),
+    }).populate("items");
 
     if (orders.length === 0) {
       return res
         .status(404)
-        .json({ message: "No orders found for the given customer" });
+        .json({ message: "No orders found for the given email" });
     }
     res.json(orders);
   } catch (err) {
