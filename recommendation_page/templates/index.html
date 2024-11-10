@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            overflow-x: hidden;
+        }
+        .container {
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 90vh;  /* Makes the container scrollable */
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 60%;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .recommended-books {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+            gap: 20px;
+            justify-items: center;
+        }
+        .extra-book-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Set 3 columns for the second row */
+            gap: 20px;
+            justify-items: center;  /* Center items in the second row */
+            justify-content: center;  /* Align the items to the center */
+        }
+        .book {
+            text-align: center;
+        }
+        .book img {
+            width: 150px;
+            height: 250px; /* Fixed size for all images */
+            object-fit: cover;  /* Ensures images cover their container */
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Book Recommender</h1>
+
+        <form method="POST">
+            <label for="book_name">Select or Type a Book:</label>
+            <input list="books" name="book_name" id="book_name" value="{{ selected_books }}">
+            <datalist id="books">
+                {% for book in book_names %}
+                    <option value="{{ book }}">
+                {% endfor %}
+            </datalist>
+            <button type="submit">Show Recommendation</button>
+        </form>
+
+        {% if recommended_books %}
+            <div>
+                <h2>Recommended Books:</h2>
+                <div class="recommended-books">
+                    {% for i in range(1, 4) %} <!-- First 3 images in row 1 -->
+                        <div class="book">
+                            <p>{{ recommended_books[i] }}</p>
+                            <img src="{{ poster_url[i] }}" alt="Poster">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="extra-book-row">
+                    {% for i in range(4, 6) %} <!-- Next 2 images in row 2 -->
+                        <div class="book">
+                            <p>{{ recommended_books[i] }}</p>
+                            <img src="{{ poster_url[i] }}" alt="Poster">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
