@@ -1,0 +1,47 @@
+[33mcommit df08aeb46e4bf7168861ee6c6cba5cb9c3d61425[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31mupstream/main[m[33m)[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Fri Nov 8 17:05:28 2024 +0530
+
+    add to wishlist working : problem : morethan one time one book is added
+
+[33mcommit e1f48517585d8e0d6daf4aad15fdef106dfa4617[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Fri Nov 8 16:08:52 2024 +0530
+
+    Place order working
+
+[33mcommit 4de0d4a22e1a8ae0e86fe11766b5752b32e2d41d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32msms-feature[m[33m)[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Wed Nov 6 20:04:20 2024 +0530
+
+    Oredr Frontend done
+
+[33mcommit 88ef0678faca6c286b57420bdcf4bed0a9577280[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Wed Nov 6 12:25:13 2024 +0530
+
+    cart done
+
+[33mcommit 547ffba9a2e4fe0040d50d7a142aae49974672cd[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Fri Oct 25 19:21:10 2024 +0530
+
+    add to cart done not fecthing cart
+
+[33mcommit 1c9e2562d39a5d60179eb634c267122215b29c8e[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Fri Oct 25 11:14:55 2024 +0530
+
+    search by option added
+
+[33mcommit a529538a451eca50ae0333de55e84fc9d81f9ff7[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Wed Sep 11 20:53:18 2024 +0530
+
+    Prototype complete Phase1
+
+[33mcommit e3f63772347e4bea17bc2e1a30fe6d2ab1485682[m
+Author: chandrasoumya <soumyadeepc108@gmail.com>
+Date:   Wed Sep 11 20:53:03 2024 +0530
+
+    first commit
